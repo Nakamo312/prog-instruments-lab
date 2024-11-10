@@ -1,10 +1,12 @@
 import argparse
+import logging
 from typing import Optional
 
 from consts import (
     conversion_factors_mass,
     conversion_functions_temperature,
     conversion_factors_length,
+    log_file,
 )
 
 
@@ -25,11 +27,16 @@ def convert_mass(value: float, from_unit: str, to_unit: str) -> Optional[float]:
         from_unit not in conversion_factors_mass
         or to_unit not in conversion_factors_mass
     ):
+        logging.error(
+            f"Ошибка конвертации массы: неверные единицы '{from_unit}' в '{to_unit}'."
+        )
         return None
 
     value_in_grams = value * conversion_factors_mass[from_unit]
     converted_value = value_in_grams / conversion_factors_mass[to_unit]
-
+    logging.info(
+        f"Конвертация массы: {value} {from_unit} = {converted_value} {to_unit}."
+    )
     return converted_value
 
 
@@ -50,8 +57,15 @@ def convert_temperature(value: float, from_unit: str, to_unit: str) -> Optional[
         from_unit in conversion_functions_temperature
         and to_unit in conversion_functions_temperature[from_unit]
     ):
-        return conversion_functions_temperature[from_unit][to_unit](value)
+        converted_value = conversion_functions_temperature[from_unit][to_unit](value)
+        logging.info(
+            f"Конвертация температуры: {value} {from_unit} = {converted_value} {to_unit}."
+        )
+        return converted_value
 
+    logging.error(
+        f"Ошибка конвертации температуры: неверные единицы '{from_unit}' в '{to_unit}'."
+    )
     return None
 
 
@@ -67,23 +81,33 @@ def convert_length(value: float, from_unit: str, to_unit: str) -> Optional[float
     Returns:
         Optional[float]: Конвертированное значение длины или None, если единицы измерения неверны.
     """
-
     if from_unit in conversion_factors_length and to_unit in conversion_factors_length:
-        return value * (
+        converted_value = value * (
             conversion_factors_length[from_unit] / conversion_factors_length[to_unit]
         )
+        logging.info(
+            f"Конвертация длины: {value} {from_unit} = {converted_value} {to_unit}."
+        )
+        return converted_value
 
+    logging.error(
+        f"Ошибка конвертации длины: неверные единицы '{from_unit}' в '{to_unit}'."
+    )
     return None
 
 
 def main() -> None:
     """
     Основная функция, которая запускает конвертер единиц измерения.
-
-    Обрабатывает аргументы командной строки и вызывает соответствующие функции конвертации.
     """
-
     parser = argparse.ArgumentParser(description="Конвертер единиц измерения.")
+
+    parser.add_argument(
+        "-log",
+        type=str,
+        default=log_file,
+        help="Файл для записи логов. Если не указан, используется файл по умолчанию.",
+    )
 
     parser.add_argument(
         "-unit",
@@ -113,9 +137,16 @@ def main() -> None:
 
     args = parser.parse_args()
 
+    # Настройка логирования в указанный файл
+    if args.log is not None:
+        logging.basicConfig(
+            filename=args.log,
+            level=logging.INFO,
+            format="%(asctime)s - %(levelname)s - %(message)s",
+        )
+
     # Определяем, какую функцию конвертации использовать
     match args.unit:
-
         case unit if unit in conversion_factors_mass.keys():
             result = convert_mass(args.value, args.unit, args.translation)
 
@@ -126,12 +157,15 @@ def main() -> None:
             result = convert_length(args.value, args.unit, args.translation)
 
         case _:
+            logging.error("Ошибка: неверные единицы измерения.")
             result = None
 
     if result is not None:
         print("{} {} = {} {}".format(args.value, args.unit, result, args.translation))
+        logging.info("Конвертация выполнена успешно.")
     else:
         print("Ошибка: Неверные единицы измерения.")
+        logging.error(f"Ошибка конвертации. Неверно указаны единицы измерения.")
 
 
 if __name__ == "__main__":

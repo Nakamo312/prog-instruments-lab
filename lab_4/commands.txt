@@ -1,0 +1,17 @@
+python unit_converter.py -unit Фаренгейт -translation Цельсий 140
+140.0 Фаренгейт = 60.0 Цельсий
+
+python unit_converter.py -unit Фаренгейт -translation Фаренгейт 140
+140.0 Фаренгейт = 140.0 Фаренгейт
+
+python unit_converter.py -unit Фаренгейт -translation унции 140
+Ошибка: Неверные единицы измерения.
+
+python unit_converter.py -unit Фаренгейт -translation метры 140
+Ошибка: Неверные единицы измерения.
+
+python unit_converter.py -unit килограммы -translation метры 140
+Ошибка: Неверные единицы измерения.
+
+python unit_converter.py -unit килограммы -translation граммы 140
+140.0 килограммы = 140000.0 граммы
