@@ -1,7 +1,7 @@
 import argparse
 from typing import Optional
 
-from .consts import (
+from consts import (
     conversion_factors_mass,
     conversion_functions_temperature,
     conversion_factors_length,
@@ -100,11 +100,13 @@ def main() -> None:
     args = parser.parse_args()
 
     # Определяем, какую функцию конвертации использовать
-    if args.unit in ["граммы", "килограммы", "фунты", "унции"]:
+    if args.unit in conversion_factors_mass.keys():
         result = convert_mass(args.value, args.unit, args.translation)
-    elif args.unit in ["Цельсий", "Фаренгейт", "Кельвин"]:
+
+    elif args.unit in conversion_functions_temperature.keys():
         result = convert_temperature(args.value, args.unit, args.translation)
-    elif args.unit in ["метры", "километры", "мили", "футы"]:
+
+    elif args.unit in conversion_factors_length.keys():
         result = convert_length(args.value, args.unit, args.translation)
     else:
         result = None
