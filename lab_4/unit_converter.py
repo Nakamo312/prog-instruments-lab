@@ -14,35 +14,22 @@ def convert_mass(value: float, from_unit: str, to_unit: str) -> Optional[float]:
     Returns:
         Optional[float]: Конвертированное значение массы или None, если единицы измерения неверны.
     """
-    if from_unit == "граммы":
-        if to_unit == "килограммы":
-            return value / 1000
-        elif to_unit == "фунты":
-            return value * 0.00220462
-        elif to_unit == "унции":
-            return value * 0.035274
-    elif from_unit == "килограммы":
-        if to_unit == "граммы":
-            return value * 1000
-        elif to_unit == "фунты":
-            return value * 2.20462
-        elif to_unit == "унции":
-            return value * 35.274
-    elif from_unit == "фунты":
-        if to_unit == "граммы":
-            return value / 0.00220462
-        elif to_unit == "килограммы":
-            return value / 2.20462
-        elif to_unit == "унции":
-            return value * 16
-    elif from_unit == "унции":
-        if to_unit == "граммы":
-            return value / 0.035274
-        elif to_unit == "килограммы":
-            return value / 35.274
-        elif to_unit == "фунты":
-            return value / 16
-    return None
+
+    conversion_factors = {
+        "граммы": 1,
+        "килограммы": 1000,
+        "фунты": 453.592,
+        "унции": 28.3495,
+    }
+
+    if from_unit not in conversion_factors or to_unit not in conversion_factors:
+        return None
+
+    value_in_grams = value * conversion_factors[from_unit]
+    converted_value = value_in_grams / conversion_factors[to_unit]
+
+    return converted_value
+
 
 
 def convert_temperature(value: float, from_unit: str, to_unit: str) -> Optional[float]:
