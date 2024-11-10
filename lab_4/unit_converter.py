@@ -82,34 +82,51 @@ def main() -> None:
 
     Обрабатывает аргументы командной строки и вызывает соответствующие функции конвертации.
     """
+
     parser = argparse.ArgumentParser(description="Конвертер единиц измерения.")
+
     parser.add_argument(
         "-unit",
         type=str,
         required=True,
-        help="Исходная единица (граммы, килограммы, фунты, унции, Цельсий, Фаренгейт, Кельвин, метры, километры, мили, футы).",
+        help=(
+            "Исходные единицы:\n"
+            f"  Масса: {', '.join(conversion_factors_mass.keys())}\n"
+            f"  Температура: {', '.join(conversion_functions_temperature.keys())}\n"
+            f"  Длина: {', '.join(conversion_factors_length.keys())}."
+        ),
     )
+
     parser.add_argument(
         "-translation",
         type=str,
         required=True,
-        help="Единица для перевода (граммы, килограммы, фунты, унции, Цельсий, Фаренгейт, Кельвин, метры, километры, мили, футы).",
+        help=(
+            "Единица для перевода:\n"
+            f"  Масса: {', '.join(conversion_factors_mass.keys())}\n"
+            f"  Температура: {', '.join(conversion_functions_temperature.keys())}\n"
+            f"  Длина: {', '.join(conversion_factors_length.keys())}."
+        ),
     )
+
     parser.add_argument("value", type=float, help="Числовое значение для конвертации.")
 
     args = parser.parse_args()
 
     # Определяем, какую функцию конвертации использовать
-    if args.unit in conversion_factors_mass.keys():
-        result = convert_mass(args.value, args.unit, args.translation)
+    match args.unit:
 
-    elif args.unit in conversion_functions_temperature.keys():
-        result = convert_temperature(args.value, args.unit, args.translation)
+        case unit if unit in conversion_factors_mass.keys():
+            result = convert_mass(args.value, args.unit, args.translation)
 
-    elif args.unit in conversion_factors_length.keys():
-        result = convert_length(args.value, args.unit, args.translation)
-    else:
-        result = None
+        case unit if unit in conversion_functions_temperature.keys():
+            result = convert_temperature(args.value, args.unit, args.translation)
+
+        case unit if unit in conversion_factors_length.keys():
+            result = convert_length(args.value, args.unit, args.translation)
+
+        case _:
+            result = None
 
     if result is not None:
         print("{} {} = {} {}".format(args.value, args.unit, result, args.translation))
