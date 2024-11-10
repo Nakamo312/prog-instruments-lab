@@ -44,21 +44,25 @@ def convert_temperature(value: float, from_unit: str, to_unit: str) -> Optional[
     Returns:
         Optional[float]: Конвертированное значение температуры или None, если единицы измерения неверны.
     """
-    if from_unit == "Цельсий":
-        if to_unit == "Фаренгейт":
-            return (value * 9 / 5) + 32
-        elif to_unit == "Кельвин":
-            return value + 273.15
-    elif from_unit == "Фаренгейт":
-        if to_unit == "Цельсий":
-            return (value - 32) * 5 / 9
-        elif to_unit == "Кельвин":
-            return (value - 32) * 5 / 9 + 273.15
-    elif from_unit == "Кельвин":
-        if to_unit == "Цельсий":
-            return value - 273.15
-        elif to_unit == "Фаренгейт":
-            return (value - 273.15) * 9 / 5 + 32
+
+    conversion_functions = {
+        "Цельсий": {
+            "Фаренгейт": lambda x: (x * 9 / 5) + 32,
+            "Кельвин": lambda x: x + 273.15,
+        },
+        "Фаренгейт": {
+            "Цельсий": lambda x: (x - 32) * 5 / 9,
+            "Кельвин": lambda x: (x - 32) * 5 / 9 + 273.15,
+        },
+        "Кельвин": {
+            "Цельсий": lambda x: x - 273.15,
+            "Фаренгейт": lambda x: (x - 273.15) * 9 / 5 + 32,
+        },
+    }
+
+    if from_unit in conversion_functions and to_unit in conversion_functions[from_unit]:
+        return conversion_functions[from_unit][to_unit](value)
+
     return None
 
 
