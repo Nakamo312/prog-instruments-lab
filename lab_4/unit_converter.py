@@ -1,6 +1,12 @@
 import argparse
 from typing import Optional
 
+from .consts import (
+    conversion_factors_mass,
+    conversion_functions_temperature,
+    conversion_factors_length,
+)
+
 
 def convert_mass(value: float, from_unit: str, to_unit: str) -> Optional[float]:
     """
@@ -15,21 +21,16 @@ def convert_mass(value: float, from_unit: str, to_unit: str) -> Optional[float]:
         Optional[float]: Конвертированное значение массы или None, если единицы измерения неверны.
     """
 
-    conversion_factors = {
-        "граммы": 1,
-        "килограммы": 1000,
-        "фунты": 453.592,
-        "унции": 28.3495,
-    }
-
-    if from_unit not in conversion_factors or to_unit not in conversion_factors:
+    if (
+        from_unit not in conversion_factors_mass
+        or to_unit not in conversion_factors_mass
+    ):
         return None
 
-    value_in_grams = value * conversion_factors[from_unit]
-    converted_value = value_in_grams / conversion_factors[to_unit]
+    value_in_grams = value * conversion_factors_mass[from_unit]
+    converted_value = value_in_grams / conversion_factors_mass[to_unit]
 
     return converted_value
-
 
 
 def convert_temperature(value: float, from_unit: str, to_unit: str) -> Optional[float]:
@@ -45,23 +46,11 @@ def convert_temperature(value: float, from_unit: str, to_unit: str) -> Optional[
         Optional[float]: Конвертированное значение температуры или None, если единицы измерения неверны.
     """
 
-    conversion_functions = {
-        "Цельсий": {
-            "Фаренгейт": lambda x: (x * 9 / 5) + 32,
-            "Кельвин": lambda x: x + 273.15,
-        },
-        "Фаренгейт": {
-            "Цельсий": lambda x: (x - 32) * 5 / 9,
-            "Кельвин": lambda x: (x - 32) * 5 / 9 + 273.15,
-        },
-        "Кельвин": {
-            "Цельсий": lambda x: x - 273.15,
-            "Фаренгейт": lambda x: (x - 273.15) * 9 / 5 + 32,
-        },
-    }
-
-    if from_unit in conversion_functions and to_unit in conversion_functions[from_unit]:
-        return conversion_functions[from_unit][to_unit](value)
+    if (
+        from_unit in conversion_functions_temperature
+        and to_unit in conversion_functions_temperature[from_unit]
+    ):
+        return conversion_functions_temperature[from_unit][to_unit](value)
 
     return None
 
@@ -78,15 +67,11 @@ def convert_length(value: float, from_unit: str, to_unit: str) -> Optional[float
     Returns:
         Optional[float]: Конвертированное значение длины или None, если единицы измерения неверны.
     """
-    conversion_factors = {
-        "метры": 1,
-        "километры": 1000,
-        "мили": 1609.34,
-        "футы": 0.3048,
-    }
 
-    if from_unit in conversion_factors and to_unit in conversion_factors:
-        return value * (conversion_factors[from_unit] / conversion_factors[to_unit])
+    if from_unit in conversion_factors_length and to_unit in conversion_factors_length:
+        return value * (
+            conversion_factors_length[from_unit] / conversion_factors_length[to_unit]
+        )
 
     return None
 
