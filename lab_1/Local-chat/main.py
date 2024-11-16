@@ -17,13 +17,9 @@ import time
 characters = string.ascii_letters + string.digits
 
 
-
-
-
 class Server():
     
-    def __init__(self, ip_adr, port, key, nickname):
-        
+    def __init__(self, ip_adr, port, key, nickname):        
         self.ip_adr = ip_adr
         self.port = port
         self.key = key
@@ -33,7 +29,6 @@ class Server():
         self.connectionAddress = None
         self.clients = []
         self.nicknames = []
-
 
     def handle_client(self, client):
         while True:
@@ -48,10 +43,7 @@ class Server():
                 msg = f'{nickname} has left the chat room!'.encode('utf-8')
                 self.broadcast(msg)
                 self.nicknames.remove(nickname)
-                break
-
-
-   
+                break  
 
     def broadcast(self, message):
         for client in self.clients:
@@ -59,7 +51,6 @@ class Server():
             client.send(message)
 
     def runServer(self):
-
         self.socket = socket.socket()
         self.socket.bind((self.ip_adr, self.port))
         self.socket.listen()
@@ -73,7 +64,6 @@ class Server():
                    {str(self.connectionAddress)}''')
 
             receivedMsg = self.socketConnection.recv(128)
-
             receivedString = receivedMsg.decode('utf-8')
 
             nickname = receivedString[-16::]
@@ -86,19 +76,18 @@ class Server():
                 self.clients.append(self.socketConnection)
 
             nickname_for_send = nickname.replace("\x00", "")
+
             self.broadcast(f'''\xaa{nickname_for_send}
                             has connected to chat'''.encode('utf-8'))
+            
             thread = threading.Thread(target=self.handle_client,
                                       args=(self.socketConnection,))
-            thread.start()
-
-        
+            thread.start()        
 
     def closeConnection(self):
         self.socketConnection.close()
         self.socket.close()
         self.connectionAddress = None
-
 
 
 class Client():
@@ -118,7 +107,6 @@ class Client():
         self.queue = queue
         self.queue_send = queue_send
         #TODO: queue v __init__ (param) a dalshe hz
-
 
     def connect_to_server(self):
         self.socket = socket.socket()
@@ -177,32 +165,22 @@ class Client():
                     print(error)
 
     def recieveMsg(self):
-
         while True:
             receivedMsg = self.socket.recv(128)
             
             if receivedMsg[0] == 194:
                 receivedString = receivedMsg.decode("utf-8")
-
             else:
                 receivedString = receivedMsg.decode("utf-8")
-
-                nickname = receivedString[-16::].replace("\x00", "")
-                
-
+                nickname = receivedString[-16::].replace("\x00", "")                
 
                 if nickname != self.nickname.replace("\x00", ""):
                     message = receivedString[0:-16]
                     self.full_recieved_msg = f"{nickname}: {message}"
-                    self.queue.put(self.full_recieved_msg)
-
-    
-
+                    self.queue.put(self.full_recieved_msg)    
 
     def add_lines(self):
-
-        try:
-           
+        try:         
             if not self.queue.empty():
                 recieved_msg_from_queue = self.queue.get()
                 kastil = "".join(map(
@@ -220,7 +198,6 @@ class Client():
         self.queue_send.put(msg_for_send)
         self.entry1.delete(0, 'end')
 
-
     def run_gui(self):
         self.root= tk.Tk()
 
@@ -235,8 +212,6 @@ class Client():
                                  command=self.send_msg_button)
         self.button1.place(x=400, y=450)
 
-
-
         self.scrollbar = tk.Scrollbar(self.root)
         self.scrollbar.pack(side="right", fill="none", expand=True)
         self.text_output = tk.Text(self.root, 
@@ -247,42 +222,29 @@ class Client():
         self.root.minsize(500, 500)
         self.root.maxsize(500, 500)
 
-
         self.root.after(0, self.add_lines)
         self.root.mainloop()
 
-
-    def runClient(self):
-        
-        
+    def runClient(self):               
         guiThread = multiprocessing.Process(target=self.run_gui)
         sendThread = threading.Thread(target=self.sendMsg)
         receiveThread = threading.Thread(target=self.recieveMsg)
 
         guiThread.start()
         sendThread.start()
-        receiveThread.start()
-        
+        receiveThread.start()       
 
         sendThread.join()
-        receiveThread.join()
-
-        
-        
-        
+        receiveThread.join()                        
 
     def closeConnection(self):
         self.socket.close()
 
 
-
 class Start():
     def main_start():
-
-
         #### read open ports ####
         list_of_ports = []
-
         for i in range(65536):
             s = socket.socket()
             s.settimeout(1)
@@ -294,12 +256,8 @@ class Start():
                 s.close
                 list_of_ports.append(i)
         #########################
-
         os.system("clear")
         tprint("Anon    chat")
-
-
-
 
         command = str(input("Are you [S]erver or [C]lient?\n"))
 
@@ -333,23 +291,17 @@ class Start():
                 time.sleep(0.3)
 
                 if port_for_key not in list_of_ports or port_for_key > 2000:
-                    try:
-                        
+                    try:                        
                         os.system("clear")
                         tprint("Anon    chat")
                         print(f'''trying to create server
                                by private key {private_key}''')
                         server = Server(ip_adr, port_for_key,
                                         private_key, nickname)
-                        server.runServer()
-                        
-                        
+                        server.runServer()                                                
                         key_is_correct = True
                     except:
-
-                        key_is_correct = False
-            
-
+                        key_is_correct = False            
 
         elif command == "C":
             queue = multiprocessing.Queue()
@@ -380,27 +332,17 @@ class Start():
 
             isConnected = client.connect_to_server()
 
-            if isConnected:
-                
-
-                client.runClient()
-                
-
-                
-                
+            if isConnected:                
+                client.runClient()                                                
             else:
                 print("Error while connecting to server")
                 exit()
-
         else:
             print("wrong input, restarting software")
             Start.main_start()
 
 
-
-if __name__ == "__main__":
-    
-    Start.main_start()
-    
+if __name__ == "__main__":    
+    Start.main_start()    
     #TODO: 1. check users by ip
     #      2. create ports for chat by some hash func
