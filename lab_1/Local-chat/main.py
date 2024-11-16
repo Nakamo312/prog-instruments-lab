@@ -20,7 +20,7 @@ class Server():
     Handles client connections, broadcasts messages, and manages nicknames.
     """
 
-    def __init__(self, ip_adr, port, key, nickname): 
+    def __init__(self, ip_adr:str, port:int, key:str, nickname:str): 
         """
         Args:
           ip_adr (str): The IP address of the server.
@@ -38,7 +38,7 @@ class Server():
         self.clients = []
         self.nicknames = []
 
-    def handle_client(self, client):
+    def handle_client(self, client:socket):
         """
         Handles a single client connection.
         Continuously receives messages from the client
@@ -63,7 +63,7 @@ class Server():
             except Exception as ex:
                 print(f"An unexpected error occurred: {ex}")
 
-    def broadcast(self, message):
+    def broadcast(self, message:bytes):
         """
         Broadcasts a message to all connected clients.
             Args:
@@ -128,7 +128,9 @@ class Client():
     and receiving messages, and GUI updates.
     """
 
-    def __init__(self, ip_adr, port, key, nickname, queue, queue_send):
+    def __init__(self, ip_adr:str, port:int, key:str,
+                 nickname:str, queue:multiprocessing.Queue,
+                 queue_send:multiprocessing.Queue):
         """
             Args:
                 ip_adr (str): The IP address of the server to connect to.
