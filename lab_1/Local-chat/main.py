@@ -150,7 +150,7 @@ class Client():
                 need_bytes_of_zero = 16 - len(nickname_enc)
 
                 list_for_join.append(message_enc)
-                list_for_join.append(b'\x00'*need_bytes_of_zero)
+                list_for_join.append(b'\x00' * need_bytes_of_zero)
                 list_for_join.append(nickname_enc)
 
                 messageToSend = b''.join(list_for_join)
@@ -254,7 +254,7 @@ class Start():
                 list_of_ports.append(i)
         #########################
         os.system("clear")
-        tprint("Anon    chat")
+        art.tprint("Anon    chat")
 
         command = str(input("Are you [S]erver or [C]lient?\n"))
 
@@ -284,7 +284,7 @@ class Start():
                     bytes(private_key.encode('utf-8')))
                 hash_dig = hash_object.hexdigest()
                 numbers = ''.join(i for i in hash_dig if not i.isalpha())
-                port_for_key = int(sum(list(map(int, numbers)))**1.64)
+                port_for_key = int(sum(list(map(int, numbers))) ** 1.64)
                 time.sleep(0.3)
 
                 if port_for_key not in list_of_ports or port_for_key > 2000:
@@ -312,7 +312,7 @@ class Start():
                 bytes(private_key_for_client.encode('utf-8')))
             hash_dig = hash_object.hexdigest()
             numbers = ''.join(i for i in hash_dig if not i.isalpha())
-            port_for_key = int(sum(list(map(int, numbers)))**1.64)
+            port_for_key = int(sum(list(map(int, numbers))) ** 1.64)
             time.sleep(0.3)
 
             if port_for_key not in list_of_ports or port_for_key < 2000:
