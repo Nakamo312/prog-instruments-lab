@@ -33,8 +33,8 @@ class Server():
         self.key = key
         self.nickname = nickname
         self.socket = None
-        self.socketConnection = None
-        self.connectionAddress = None
+        self.socket_conn = None
+        self.conn_addr = None
         self.clients = []
         self.nicknames = []
 
@@ -71,7 +71,7 @@ class Server():
             print(message)
             client.send(message)
 
-    def runServer(self):
+    def run(self):
         """
         Starts the server and listens for incoming client connections.
         Creates a socket, binds it to the specified IP address and port,
@@ -86,22 +86,22 @@ class Server():
                {self.port} by private key {self.key}...''')
         while True:
             print(self.clients, self.nickname)
-            self.socketConnection, 
-            self.connectionAddress = self.socket.accept()
+            self.socket_conn, 
+            self.conn_addr = self.socket.accept()
             print(f'''connection is established with
-                   {str(self.connectionAddress)}''')
+                   {str(self.conn_addr)}''')
 
-            receivedMsg = self.socketConnection.recv(128)
-            receivedString = receivedMsg.decode('utf-8')
+            recieved_msg = self.socket_conn.recv(128)
+            recieved_line = recieved_msg.decode('utf-8')
 
-            nickname = receivedString[-16::]
+            nickname = recieved_line[-16::]
             nickname.replace("\x00", "")
 
             if nickname not in self.nicknames:
                 self.nicknames.append(nickname)
             
-            if self.socketConnection not in self.clients:
-                self.clients.append(self.socketConnection)
+            if self.socket_conn not in self.clients:
+                self.clients.append(self.socket_conn)
 
             nickname_for_send = nickname.replace("\x00", "")
 
@@ -109,14 +109,14 @@ class Server():
                             has connected to chat'''.encode('utf-8'))
             
             thread = _thread.threading.Thread(target=self.handle_client,
-                                      args=(self.socketConnection,))
+                                      args=(self.socket_conn,))
             thread.start()        
 
-    def closeConnection(self):
+    def close_conn(self):
         """Closes the server's socket and connection address."""
-        self.socketConnection.close()
+        self.socket_conn.close()
         self.socket.close()
-        self.connectionAddress = None
+        self.conn_addr = None
 
 
 class Client():
@@ -185,23 +185,23 @@ class Client():
         list_for_join.append(b'\x00'*need_bytes_of_zero)
         list_for_join.append(nickname_enc)
 
-        messageToSend = b''.join(list_for_join)
+        msg_to_send = b''.join(list_for_join)
 
         try:
-            self.socket.send(messageToSend)
+            self.socket.send(msg_to_send)
         except socket.error as error:
             print("Sorry, we can't send your message")
             print(error)
         return True
     
-    def sendMsg(self):
+    def send_msg(self):
         """Sends messages from the queue to the server."""
         while True:
             if not self.queue_send.empty():
-                keyboardInput = self.queue_send.get()
+                kboard_input = self.queue_send.get()
                 list_for_join = []
 
-                message_enc = keyboardInput.encode("utf-8")
+                message_enc = kboard_input.encode("utf-8")
 
                 nickname_enc = self.nickname.encode('utf-8')
                 need_bytes_of_zero = 16 - len(nickname_enc)
@@ -210,30 +210,30 @@ class Client():
                 list_for_join.append(b'\x00' * need_bytes_of_zero)
                 list_for_join.append(nickname_enc)
 
-                messageToSend = b''.join(list_for_join)
+                msg_to_send = b''.join(list_for_join)
 
                 try:
-                    self.socket.send(messageToSend)
+                    self.socket.send(msg_to_send)
                 except socket.error as error:
                     print("Sorry, we can't send your message")
                     print(error)
 
-    def recieveMsg(self):
+    def receive_msg(self):
         """
         Receives messages from the server
         and puts them into the queue.
         """
         while True:
-            receivedMsg = self.socket.recv(128)
+            recieved_msg = self.socket.recv(128)
             
-            if receivedMsg[0] == 194:
-                receivedString = receivedMsg.decode("utf-8")
+            if recieved_msg[0] == 194:
+                recieved_line = recieved_msg.decode("utf-8")
             else:
-                receivedString = receivedMsg.decode("utf-8")
-                nickname = receivedString[-16::].replace("\x00", "")                
+                recieved_line = recieved_msg.decode("utf-8")
+                nickname = recieved_line[-16::].replace("\x00", "")                
 
                 if nickname != self.nickname.replace("\x00", ""):
-                    message = receivedString[0:-16]
+                    message = recieved_line[0:-16]
                     self.full_recieved_msg = f"{nickname}: {message}"
                     self.queue.put(self.full_recieved_msg)    
 
@@ -292,23 +292,23 @@ class Client():
         self.root.after(0, self.add_lines)
         self.root.mainloop()
 
-    def runClient(self):
+    def run(self):
         """
         Runs the client, starting threads for GUI,
         sending, and receiving messages.
         """                              
-        guiThread = multiprocessing.Process(target=self.run_gui)
-        sendThread = _thread.threading.Thread(target=self.sendMsg)
-        receiveThread = _thread.threading.Thread(target=self.recieveMsg)
+        GUITread = multiprocessing.Process(target=self.run_gui)
+        send_thread = _thread.threading.Thread(target=self.send_msg)
+        receive_thread = _thread.threading.Thread(target=self.receive_msg)
 
-        guiThread.start()
-        sendThread.start()
-        receiveThread.start()       
+        GUITread.start()
+        send_thread.start()
+        receive_thread.start()       
 
-        sendThread.join()
-        receiveThread.join()                        
+        send_thread.join()
+        receive_thread.join()                        
 
-    def closeConnection(self):
+    def close_conn(self):
         """Closes the client's socket connection."""
         self.socket.close()
 
@@ -381,7 +381,7 @@ class Start():
                                by private key {private_key}''')
                         server = Server(ip_adr, port_for_key,
                                         private_key, nickname)
-                        server.runServer()                                                
+                        server.run()                                                
                         key_is_correct = True
                     except:
                         key_is_correct = False            
@@ -413,10 +413,10 @@ class Start():
                 private_key_for_client,
                 nickname, queue, queue_send)
 
-            isConnected = client.connect_to_server()
+            is_connected = client.connect_to_server()
 
-            if isConnected:                
-                client.runClient()                                                
+            if is_connected:                
+                client.run()                                                
             else:
                 print("Error while connecting to server")
                 exit()
