@@ -45,7 +45,8 @@ class Server():
                 self.clients.remove(client)
                 client.close()
                 nickname = self.nicknames[index]
-                self.broadcast(f'{nickname} has left the chat room!'.encode('utf-8'))
+                msg = f'{nickname} has left the chat room!'.encode('utf-8')
+                self.broadcast(msg)
                 self.nicknames.remove(nickname)
                 break
 
@@ -62,11 +63,14 @@ class Server():
         self.socket = socket.socket()
         self.socket.bind((self.ip_adr, self.port))
         self.socket.listen()
-        print(f'Server is running and listening on port {self.port} by private key {self.key}...')
+        print(f'''Server is running and listening on port
+               {self.port} by private key {self.key}...''')
         while True:
             print(self.clients, self.nickname)
-            self.socketConnection, self.connectionAddress = self.socket.accept()
-            print(f'connection is established with {str(self.connectionAddress)}')
+            self.socketConnection, 
+            self.connectionAddress = self.socket.accept()
+            print(f'''connection is established with
+                   {str(self.connectionAddress)}''')
 
             receivedMsg = self.socketConnection.recv(128)
 
@@ -82,8 +86,10 @@ class Server():
                 self.clients.append(self.socketConnection)
 
             nickname_for_send = nickname.replace("\x00", "")
-            self.broadcast(f'\xaa{nickname_for_send} has connected to chat'.encode('utf-8'))
-            thread = threading.Thread(target=self.handle_client, args=(self.socketConnection,))
+            self.broadcast(f'''\xaa{nickname_for_send}
+                            has connected to chat'''.encode('utf-8'))
+            thread = threading.Thread(target=self.handle_client,
+                                      args=(self.socketConnection,))
             thread.start()
 
         
@@ -126,7 +132,8 @@ class Client():
                 print(error)
                 count_of_connection += 1
                 if count_of_connection > 4:
-                    print("You try it for 5+ times, we gonna close your connection")
+                    print('''You try it for 5+ times, we gonna close
+                           your connection''')
                     self.socket.close()
                     return False
                 time.sleep(1)
@@ -180,11 +187,11 @@ class Client():
             else:
                 receivedString = receivedMsg.decode("utf-8")
 
-                nickname = receivedString[-16::]
-                nickname.replace("\x00", "")
+                nickname = receivedString[-16::].replace("\x00", "")
+                
 
 
-                if nickname.replace("\x00", "") != self.nickname.replace("\x00", ""):
+                if nickname != self.nickname.replace("\x00", ""):
                     message = receivedString[0:-16]
                     self.full_recieved_msg = f"{nickname}: {message}"
                     self.queue.put(self.full_recieved_msg)
@@ -198,11 +205,12 @@ class Client():
            
             if not self.queue.empty():
                 recieved_msg_from_queue = self.queue.get()
-                kastil = "".join(map(str, list(recieved_msg_from_queue))).replace('\x00', '')
+                kastil = "".join(map(
+                    str, list(recieved_msg_from_queue))).replace('\x00', '')
 
                 self.text_output.insert("end", kastil + "\n") 
-                self.text_output.see("end")  # Scroll to the end of the Text widget
-            self.root.after(100, self.add_lines)  # Schedule the next update
+                self.text_output.see("end")  
+            self.root.after(100, self.add_lines)  
         except Exception as ex:
             print(ex)
     
@@ -223,14 +231,16 @@ class Client():
         self.entry1 = tk.Entry(self.root) 
         self.entry1.place(x=15, y=400, width=450, height=50)
 
-        self.button1 = tk.Button(self.root, text='send', command=self.send_msg_button)
+        self.button1 = tk.Button(self.root, text='send',
+                                 command=self.send_msg_button)
         self.button1.place(x=400, y=450)
 
 
 
         self.scrollbar = tk.Scrollbar(self.root)
         self.scrollbar.pack(side="right", fill="none", expand=True)
-        self.text_output = tk.Text(self.root, yscrollcommand=self.scrollbar.set)
+        self.text_output = tk.Text(self.root, 
+                                   yscrollcommand=self.scrollbar.set)
         self.text_output.place(x=15, y=50, width=450, height=300)
         self.scrollbar.config(command=self.text_output.yview)
 
@@ -300,7 +310,10 @@ class Start():
             while not key_is_correct:
                 os.system("clear")
                 tprint("Anon    chat")
-                private_key = "?" + ''.join(random.choice(characters) for i in range(6))
+                key_prefix = "?"
+                key_length = 6
+                lett = [random.choice(characters) for _ in range(key_length)]
+                private_key = key_prefix + ''.join(lett)
                 print(f"checking key {private_key} for unic.")
                 time.sleep(0.75)
                 os.system("clear")
@@ -312,7 +325,8 @@ class Start():
                 print(f"checking key {private_key} for unic...")
                 time.sleep(0.75)
                 
-                hash_object = hashlib.sha256(bytes(private_key.encode('utf-8')))
+                hash_object = hashlib.sha256(
+                    bytes(private_key.encode('utf-8')))
                 hash_dig = hash_object.hexdigest()
                 numbers = ''.join(i for i in hash_dig if not i.isalpha())
                 port_for_key = int(sum(list(map(int, numbers)))**1.64)
@@ -323,8 +337,10 @@ class Start():
                         
                         os.system("clear")
                         tprint("Anon    chat")
-                        print(f"trying to create server by private key {private_key}")
-                        server = Server(ip_adr, port_for_key, private_key, nickname)
+                        print(f'''trying to create server
+                               by private key {private_key}''')
+                        server = Server(ip_adr, port_for_key,
+                                        private_key, nickname)
                         server.runServer()
                         
                         
@@ -343,7 +359,8 @@ class Start():
 
             private_key_for_client = input("Enter the key: ")
             
-            hash_object = hashlib.sha256(bytes(private_key_for_client.encode('utf-8')))
+            hash_object = hashlib.sha256(
+                bytes(private_key_for_client.encode('utf-8')))
             hash_dig = hash_object.hexdigest()
             numbers = ''.join(i for i in hash_dig if not i.isalpha())
             port_for_key = int(sum(list(map(int, numbers)))**1.64)
@@ -356,7 +373,10 @@ class Start():
                 print(f"done! {private_key_for_client} is correct")
             nickname = input("Enter your nickname for chat (max len 16): ")
 
-            client = Client(ip_adr, port_for_key, private_key_for_client, nickname, queue, queue_send)
+            client = Client(
+                ip_adr, port_for_key, 
+                private_key_for_client,
+                nickname, queue, queue_send)
 
             isConnected = client.connect_to_server()
 
