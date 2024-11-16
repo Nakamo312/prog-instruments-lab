@@ -1,17 +1,14 @@
-import socket
-import sys
-import os
-import time
-from art import *
-import random
-import string
 import hashlib
-import threading
-from _thread import *
-
-import multiprocessing
-import tkinter as tk
+import os
+import random
+import socket
+import string
 import time
+import _thread 
+import art 
+
+import multiprocessing 
+import tkinter as tk
 
 
 characters = string.ascii_letters + string.digits
@@ -80,7 +77,7 @@ class Server():
             self.broadcast(f'''\xaa{nickname_for_send}
                             has connected to chat'''.encode('utf-8'))
             
-            thread = threading.Thread(target=self.handle_client,
+            thread = _thread.threading.Thread(target=self.handle_client,
                                       args=(self.socketConnection,))
             thread.start()        
 
@@ -227,8 +224,8 @@ class Client():
 
     def runClient(self):               
         guiThread = multiprocessing.Process(target=self.run_gui)
-        sendThread = threading.Thread(target=self.sendMsg)
-        receiveThread = threading.Thread(target=self.recieveMsg)
+        sendThread = _thread.threading.Thread(target=self.sendMsg)
+        receiveThread = _thread.threading.Thread(target=self.recieveMsg)
 
         guiThread.start()
         sendThread.start()
@@ -267,7 +264,7 @@ class Start():
             nickname = None
             while not key_is_correct:
                 os.system("clear")
-                tprint("Anon    chat")
+                art.tprint("Anon    chat")
                 key_prefix = "?"
                 key_length = 6
                 lett = [random.choice(characters) for _ in range(key_length)]
@@ -275,11 +272,11 @@ class Start():
                 print(f"checking key {private_key} for unic.")
                 time.sleep(0.75)
                 os.system("clear")
-                tprint("Anon    chat")
+                art.tprint("Anon    chat")
                 print(f"checking key {private_key} for unic..")
                 time.sleep(0.75)
                 os.system("clear")
-                tprint("Anon    chat")
+                art.tprint("Anon    chat")
                 print(f"checking key {private_key} for unic...")
                 time.sleep(0.75)
                 
@@ -293,7 +290,7 @@ class Start():
                 if port_for_key not in list_of_ports or port_for_key > 2000:
                     try:                        
                         os.system("clear")
-                        tprint("Anon    chat")
+                        art.tprint("Anon    chat")
                         print(f'''trying to create server
                                by private key {private_key}''')
                         server = Server(ip_adr, port_for_key,
@@ -321,7 +318,7 @@ class Start():
             if port_for_key not in list_of_ports or port_for_key < 2000:
                 key_is_correct = True
                 os.system("clear")
-                tprint("Anon    chat")
+                art.tprint("Anon    chat")
                 print(f"done! {private_key_for_client} is correct")
             nickname = input("Enter your nickname for chat (max len 16): ")
 
