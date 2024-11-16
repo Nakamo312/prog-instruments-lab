@@ -103,7 +103,6 @@ class Client():
         self.full_recieved_msg = ''
         self.queue = queue
         self.queue_send = queue_send
-        #TODO: queue v __init__ (param) a dalshe hz
 
     def connect_to_server(self):
         self.socket = socket.socket()
@@ -240,7 +239,7 @@ class Client():
 
 class Start():
     def main_start():
-        #### read open ports ####
+        # Search for open ports.
         list_of_ports = []
         for i in range(65536):
             s = socket.socket()
@@ -252,7 +251,6 @@ class Start():
             else:
                 s.close
                 list_of_ports.append(i)
-        #########################
         os.system("clear")
         art.tprint("Anon    chat")
 
@@ -339,7 +337,8 @@ class Start():
             Start.main_start()
 
 
-if __name__ == "__main__":    
+if __name__ == "__main__":  
+    #TODO:
+    #  1. check users by ip
+    #  2. create ports for chat by some hash func  
     Start.main_start()    
-    #TODO: 1. check users by ip
-    #      2. create ports for chat by some hash func
