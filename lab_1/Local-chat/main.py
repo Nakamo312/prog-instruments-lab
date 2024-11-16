@@ -15,8 +15,19 @@ characters = string.ascii_letters + string.digits
 
 
 class Server():
-    
-    def __init__(self, ip_adr, port, key, nickname):        
+    """
+    This class represents the chat server. 
+    Handles client connections, broadcasts messages, and manages nicknames.
+    """
+
+    def __init__(self, ip_adr, port, key, nickname): 
+        """
+        Args:
+          ip_adr (str): The IP address of the server.
+          port (int): The port number of the server.
+          key (str): The private key used to identify the server.
+          nickname (str): The nickname of the server.
+        """       
         self.ip_adr = ip_adr
         self.port = port
         self.key = key
@@ -28,6 +39,14 @@ class Server():
         self.nicknames = []
 
     def handle_client(self, client):
+        """
+        Handles a single client connection.
+        Continuously receives messages from the client
+        and broadcasts them to all other connected clients.
+
+        Args:
+            client (socket): The socket object representing the client connection.
+        """
         while True:
             try:
                 message = client.recv(1024)
@@ -43,11 +62,23 @@ class Server():
                 break  
 
     def broadcast(self, message):
+        """
+        Broadcasts a message to all connected clients.
+            Args:
+                message (bytes): The message to broadcast.
+        """
         for client in self.clients:
             print(message)
             client.send(message)
 
     def runServer(self):
+        """
+        Starts the server and listens for incoming client connections.
+        Creates a socket, binds it to the specified IP address and port,
+        and listens for incoming connections.
+        For each incoming connection, it creates
+        a new thread to handle the client.
+        """
         self.socket = socket.socket()
         self.socket.bind((self.ip_adr, self.port))
         self.socket.listen()
@@ -82,14 +113,31 @@ class Server():
             thread.start()        
 
     def closeConnection(self):
+        """Closes the server's socket and connection address."""
         self.socketConnection.close()
         self.socket.close()
         self.connectionAddress = None
 
 
 class Client():
+    """
+    This class represents the chat client. 
+    Handles connection to the server, sending
+    and receiving messages, and GUI updates.
+    """
 
     def __init__(self, ip_adr, port, key, nickname, queue, queue_send):
+        """
+            Args:
+                ip_adr (str): The IP address of the server to connect to.
+                port (int): The port number of the server.
+                key (str): The private key used for authentication.
+                nickname (str): The nickname of the client (user).
+                queue (multiprocessing.Queue): Queue for incoming
+                messages from the server.
+                queue_send (multiprocessing.Queue): Queue for outgoing messages
+                to be sent to the server.
+        """
         self.ip_adr = ip_adr
         self.port = port 
         self.key = key
@@ -105,6 +153,15 @@ class Client():
         self.queue_send = queue_send
 
     def connect_to_server(self):
+        """
+        Attempts to connect to the specified server.
+        This method creates a socket connection to the
+        server using the provided IP address and port.
+        It retries the connection up to five times in case of failure.
+        Returns:
+            bool: Returns True if the connection was successful,
+            False if the connection failed after five attempts.
+        """
         self.socket = socket.socket()
         count_of_connection = 0
         while True:
@@ -138,6 +195,7 @@ class Client():
         return True
     
     def sendMsg(self):
+        """Sends messages from the queue to the server."""
         while True:
             if not self.queue_send.empty():
                 keyboardInput = self.queue_send.get()
@@ -161,6 +219,10 @@ class Client():
                     print(error)
 
     def recieveMsg(self):
+        """
+        Receives messages from the server
+        and puts them into the queue.
+        """
         while True:
             receivedMsg = self.socket.recv(128)
             
@@ -176,6 +238,10 @@ class Client():
                     self.queue.put(self.full_recieved_msg)    
 
     def add_lines(self):
+        """
+        Adds received messages
+        from the queue to the text output.
+        """
         try:         
             if not self.queue.empty():
                 recieved_msg_from_queue = self.queue.get()
@@ -189,12 +255,17 @@ class Client():
             print(ex)
     
     def send_msg_button(self):
+        """
+        Handles sending a message when
+        the send button is pressed.
+        """
         msg_for_send = self.entry1.get()
         self.queue.put(f'{self.nickname} : {msg_for_send}')
         self.queue_send.put(msg_for_send)
         self.entry1.delete(0, 'end')
 
     def run_gui(self):
+        """Initialize and runs the GUI in mainloop."""
         self.root= tk.Tk()
 
         self.label1 = tk.Label(self.root, text='Anon chat')
@@ -221,7 +292,11 @@ class Client():
         self.root.after(0, self.add_lines)
         self.root.mainloop()
 
-    def runClient(self):               
+    def runClient(self):
+        """
+        Runs the client, starting threads for GUI,
+        sending, and receiving messages.
+        """                              
         guiThread = multiprocessing.Process(target=self.run_gui)
         sendThread = _thread.threading.Thread(target=self.sendMsg)
         receiveThread = _thread.threading.Thread(target=self.recieveMsg)
@@ -234,11 +309,24 @@ class Client():
         receiveThread.join()                        
 
     def closeConnection(self):
+        """Closes the client's socket connection."""
         self.socket.close()
 
 
 class Start():
+    """
+    The handles the initialization and execution of the chat application.
+    It checks for available ports, prompts the user to choose between server and client modes,
+    and manages the creation of server or client instances.
+    """
+
+    @staticmethod
     def main_start():
+        """
+        Main method that starts the application.
+        It searches for available ports, prompts the user for input, and creates either
+        a server or client instance based on the user's choice.
+        """
         # Search for open ports.
         list_of_ports = []
         for i in range(65536):
