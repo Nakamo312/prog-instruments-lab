@@ -51,7 +51,7 @@ class Server():
             try:
                 message = client.recv(1024)
                 self.broadcast(message)
-            except:
+            except (ConnectionResetError, OSError) as error:
                 index = self.clients.index(client)
                 self.clients.remove(client)
                 client.close()
@@ -59,7 +59,9 @@ class Server():
                 msg = f'{nickname} has left the chat room!'.encode('utf-8')
                 self.broadcast(msg)
                 self.nicknames.remove(nickname)
-                break  
+                break 
+            except Exception as ex:
+                print(f"An unexpected error occurred: {ex}")
 
     def broadcast(self, message):
         """
@@ -252,7 +254,7 @@ class Client():
                 self.text_output.see("end")  
             self.root.after(100, self.add_lines)  
         except Exception as ex:
-            print(ex)
+            print(f"An unexpected error occurred: {ex}")
     
     def send_msg_button(self):
         """
@@ -334,9 +336,9 @@ class Start():
             s.settimeout(1)
             try:
                 s.connect(('127.0.0.1', i))
-            except socket.error:
-                pass
-            else:
+            except socket.error as error:
+                print(f"Connection failed on port {i}: {error}")
+            finally:
                 s.close
                 list_of_ports.append(i)
         os.system("clear")
@@ -383,8 +385,15 @@ class Start():
                                         private_key, nickname)
                         server.run()                                                
                         key_is_correct = True
-                    except:
-                        key_is_correct = False            
+                    except ValueError as ve:
+                        print(f"ValueError occurred: {ve}")
+                        key_is_correct = False
+                    except ConnectionError as ce:
+                        print(f"ConnectionError occurred: {ce}")
+                        key_is_correct = False
+                    except Exception as e: 
+                        print(f"An unexpected error occurred: {e}")
+                        key_is_correct = False           
 
         elif command == "C":
             queue = multiprocessing.Queue()
