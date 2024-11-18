@@ -16,3 +16,18 @@
 2024-11-17 20:52:35,541 - [App.Server]: INFO > USER_ADDED: BibaBuba has connected to chat
 2024-11-17 20:53:06,036 - [App.Client]: INFO > ALL_SEND: Hello: BibaBuba
 2024-11-17 20:53:43,003 - [App.Client]: INFO > ALL_SEND: https:/domain.com/: Nakamo
+2024-11-19 01:29:28,467 - [App.Server]: INFO > AСTION: Server is running and listening on port 5938
+2024-11-19 01:29:52,648 - [App.Server]: INFO > ACTION: connection is established with 127.0.0.1:65510
+2024-11-19 01:29:55,328 - [App.Server]: INFO > AСTION: Server is running and listening on port 5412
+2024-11-19 01:30:06,580 - [App.Client]: INFO > ALL_SEND: Мой телефон +7 (916) 123-45-67, а сайт - https://www.example.com: Nakamo312
+2024-11-19 01:30:21,425 - [App.Client]: INFO > ALL_SEND: Звоните 88005553535 или посетите www.google.ru. Или вот другой номер: +1-555-123-4567: Nakamo312
+2024-11-19 01:30:21,425 - [App.Client]: WARNING > Sorry, we can't send your message 	 [WinError 10053] Программа на вашем хост-компьютере разорвала установленное подключение
+2024-11-19 01:31:22,076 - [App.Server]: INFO > AСTION: Server is running and listening on port 3155
+2024-11-19 01:31:43,655 - [App.Server]: INFO > ACTION: connection is established with 127.0.0.1:54368
+2024-11-19 01:31:46,329 - [App.Server]: INFO > AСTION: Server is running and listening on port 3745
+2024-11-19 01:32:11,292 - [App.Client]: INFO > ALL_SEND: Мой телефон +7 (916) 123-45-67, а сайт - https://www.example.com: Nakamo312
+2024-11-19 01:32:20,467 - [App.Client]: INFO > ALL_SEND: Звоните 88005553535 или посетите www.google.ru. Или вот другой номер: +1-555-123-4567: Nakamo312
+2024-11-19 01:32:20,467 - [App.Client]: WARNING > Sorry, we can't send your message 	 [WinError 10053] Программа на вашем хост-компьютере разорвала установленное подключение
+2024-11-19 01:35:28,381 - [App.Server]: INFO > AСTION: Server is running and listening on port 2064
+2024-11-19 01:35:49,340 - [App.Server]: INFO > ACTION: connection is established with 127.0.0.1:58608
+2024-11-19 01:35:52,009 - [App.Server]: INFO > AСTION: Server is running and listening on port 6036

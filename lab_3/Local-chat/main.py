@@ -2,6 +2,7 @@ import hashlib
 import json
 import os
 import random
+import re
 import socket
 import string
 import time
@@ -14,6 +15,24 @@ import tkinter as tk
 
 
 characters = string.ascii_letters + string.digits
+
+class RegexProcessor:
+    def __init__(self):
+        self.masked = True
+        self.patterns = [
+          (r"https?:\/\/\S+", "URL"),
+          (r"\+?\d{1,3}?[-.\s]?(?\d{3})?[-.\s]?\d{3}[-.\s]?\d{2}[-.\s]?\d{2}", "Phone")
+        ]
+        self.logger = ChatLogger().getLogger(self.__class__.__name__)
+    
+    def regex_processing(self, message:str) -> str:
+        for pattern, name in self.patterns:
+            matches = re.findall(pattern, message)
+            for m in matches:
+                self.logger.info("CATCH: %s"\
+                                 " | %s" %(name, m))           
+            message = re.sub(pattern, "*", message)
+        return message
 
 
 class ChatLogger:
@@ -67,6 +86,7 @@ class Server():
         self.clients = []
         self.nicknames = []
 
+        self.regex_processor = RegexProcessor()
         self.logger = ChatLogger().getLogger(self.__class__.__name__)
 
     def handle_client(self, client: socket):
@@ -96,6 +116,7 @@ class Server():
             except Exception as ex:
                 self.logger.error("An unexpected error occurred: %s" %ex)
 
+
     def broadcast(self, message:bytes):
         """
         Broadcasts a message to all connected clients.
@@ -104,8 +125,9 @@ class Server():
         """
         msg = message.replace(b"\x00", b"").decode('utf-8')
         if msg:
+            msg = self.regex_processor.regex_processing(msg)
             for client in self.clients:
-                client.send(message)
+                client.send(msg)
 
     def run(self):
         """

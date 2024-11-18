@@ -40,6 +40,13 @@
       "formatter": "extra",
       "filename": "app_errors.log",
       "encoding": "utf8"
+    },
+    "regex_file_handler": {
+      "class": "logging.FileHandler",
+      "level": "INFO",
+      "formatter": "simple",
+      "filename": "msg_regex.log",
+      "encoding": "utf8"
     }
   },
 
@@ -57,6 +64,11 @@
     "App.Client": {
       "level": "INFO",
       "handlers": ["info_file_handler"],
+      "propagate": false
+    },
+    "App.RegexProcessor": {
+      "level": "INFO",
+      "handlers": ["regex_file_handler"],
       "propagate": false
     }
   },

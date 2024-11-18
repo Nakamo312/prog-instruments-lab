@@ -1,2 +1,5 @@
 2024-11-17 05:26:19,152 root main.py 423 main_start ERROR An unexpected error occurred: a bytes-like object is required, not 'str'
 2024-11-17 05:30:14,784 root main.py 423 main_start ERROR An unexpected error occurred: a bytes-like object is required, not 'str'
+2024-11-19 01:29:52,649 root main.py 457 main_start ERROR An unexpected error occurred: cannot use a string pattern on a bytes-like object
+2024-11-19 01:31:43,656 root main.py 457 main_start ERROR An unexpected error occurred: unknown extension ?\d at position 19
+2024-11-19 01:35:49,341 root main.py 457 main_start ERROR An unexpected error occurred: unknown extension ?\d at position 19
