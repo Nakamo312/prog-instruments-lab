@@ -1,0 +1,2 @@
+2024-11-17 05:26:19,152 root main.py 423 main_start ERROR An unexpected error occurred: a bytes-like object is required, not 'str'
+2024-11-17 05:30:14,784 root main.py 423 main_start ERROR An unexpected error occurred: a bytes-like object is required, not 'str'

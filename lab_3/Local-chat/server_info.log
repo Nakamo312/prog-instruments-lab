@@ -1,0 +1,18 @@
+
+2024-11-17 05:56:38,335 - [App.Server]: INFO > AСTION: Server is running and listening on port 4860
+2024-11-17 05:57:25,165 - [App.Server]: INFO > ACTION: connection is established with 127.0.0.1:53657
+2024-11-17 05:57:25,165 - [App.Server]: INFO > USER_ADDED: Vuvochka has connected to chat
+2024-11-17 05:57:34,484 - [App.Server]: INFO > ACTION: connection is established with 127.0.0.1:53659
+2024-11-17 05:57:34,484 - [App.Server]: INFO > USER_ADDED: Nakamo has connected to chat
+2024-11-17 05:57:41,503 - [App.Client]: INFO > ALL_SEND: Hello: Vuvochka
+2024-11-17 05:57:48,752 - [App.Client]: INFO > ALL_SEND: Bye: Nakamo
+2024-11-17 05:57:53,270 - [App.Server]: INFO > USER_REMOVED: Nakamohas left the chat room!
+2024-11-17 05:58:05,886 - [App.Client]: INFO > ALL_SEND: Bye :(: Vuvochka
+2024-11-17 05:58:10,070 - [App.Server]: INFO > USER_REMOVED: Vuvochkahas left the chat room!
+2024-11-17 20:51:19,994 - [App.Server]: INFO > AСTION: Server is running and listening on port 4076
+2024-11-17 20:51:57,702 - [App.Server]: INFO > ACTION: connection is established with 127.0.0.1:59177
+2024-11-17 20:51:57,703 - [App.Server]: INFO > USER_ADDED: Nakamo has connected to chat
+2024-11-17 20:52:35,541 - [App.Server]: INFO > ACTION: connection is established with 127.0.0.1:59180
+2024-11-17 20:52:35,541 - [App.Server]: INFO > USER_ADDED: BibaBuba has connected to chat
+2024-11-17 20:53:06,036 - [App.Client]: INFO > ALL_SEND: Hello: BibaBuba
+2024-11-17 20:53:43,003 - [App.Client]: INFO > ALL_SEND: https:/domain.com/: Nakamo
