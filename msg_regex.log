@@ -1,0 +1,8 @@
+2024-11-19 15:00:13,253 - [App.RegexProcessor]: INFO > CATCH: URL | http://myblog.com/page1,
+2024-11-19 15:00:19,770 - [App.RegexProcessor]: INFO > CATCH: Phone | +1-555-123-4567
+2024-11-19 15:01:58,269 - [App.RegexProcessor]: INFO > CATCH: URL | http://myblog.com/page1,
+2024-11-19 15:01:58,269 - [App.RegexProcessor]: INFO > CATCH: Phone | +1-555-123-4567
+2024-11-19 15:02:37,336 - [App.RegexProcessor]: INFO > CATCH: Phone | +1-555-123-4567
+2024-11-19 15:02:38,232 - [App.RegexProcessor]: INFO > CATCH: URL | http://myblog.com/page1
+2024-11-19 15:02:52,612 - [App.RegexProcessor]: INFO > CATCH: URL | http://myblog.com/page1
+2024-11-19 15:03:31,901 - [App.RegexProcessor]: INFO > CATCH: URL | http://myblog.com/page1

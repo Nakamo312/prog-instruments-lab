@@ -20,18 +20,23 @@ class RegexProcessor:
     def __init__(self):
         self.masked = True
         self.patterns = [
-          (r"https?:\/\/\S+", "URL"),
-          (r"\+?\d{1,3}?[-.\s]?(?\d{3})?[-.\s]?\d{3}[-.\s]?\d{2}[-.\s]?\d{2}", "Phone")
+          (r"(?<=[^\w@])(?:https?:\/\/)?(?:www\.)?(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+(?:[a-zA-Z]{2,6}|xn--[a-zA-Z0-9]+)(?:\/[^\s]*)?", "URL"),
+          (r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}", "MAIL"),
+          (r"\+?[1-8]\d{10}|\+?[1-8][-.\s]\(?\d{3}\)?[-.\s]\d{3}?[-.\s](?:\d{2}[-.\s]\d{2}|\d{4})", "Phone",
+           )
         ]
         self.logger = ChatLogger().getLogger(self.__class__.__name__)
     
     def regex_processing(self, message:str) -> str:
         for pattern, name in self.patterns:
-            matches = re.findall(pattern, message)
-            for m in matches:
-                self.logger.info("CATCH: %s"\
-                                 " | %s" %(name, m))           
-            message = re.sub(pattern, "*", message)
+            try:
+                matches = re.findall(pattern, message, re.MULTILINE | re.DOTALL)
+                for m in matches:
+                    self.logger.info("CATCH: %s"\
+                                     " | %s" %(name, m))  
+            except Exception as e:
+                self.logger.error("%s" %e)         
+            message = re.sub(pattern, "******", message)
         return message
 
 
@@ -39,7 +44,8 @@ class ChatLogger:
     """
     A class for managing chat logging based on a JSON configuration file.
 
-    Initializes a logger from a configuration file and provides methods for obtaining loggers 
+    Initializes a logger from a configuration file and provides
+    methods for obtaining loggers 
     with different names in the logger hierarchy.
     """
 
@@ -122,12 +128,23 @@ class Server():
         Broadcasts a message to all connected clients.
             Args:
                 message (bytes): The message to broadcast.
-        """
-        msg = message.replace(b"\x00", b"").decode('utf-8')
-        if msg:
-            msg = self.regex_processor.regex_processing(msg)
-            for client in self.clients:
-                client.send(msg)
+        """  
+        if message[0] == 194:
+            msg = message.replace(b"\x00", b"").decode("utf-8")
+            if msg:
+                for client in self.clients:
+                    client.send(message)
+        else:
+            recieved_line = message
+            nickname = recieved_line[-16::]              
+            message = recieved_line[0:-16]
+            if message:
+                message = message.decode('utf-8')
+                message = self.regex_processor.regex_processing(message)
+                message = message.encode('utf-8')
+                full_msg = message + nickname
+                for client in self.clients:
+                    client.send(full_msg)
 
     def run(self):
         """
@@ -270,7 +287,7 @@ class Client():
                 list_for_join.append(nickname_enc)
 
                 msg_to_send = b''.join(list_for_join)
-                self.logger.info("ALL_SEND: %s: %s" %(kboard_input, self.nickname))
+                self.logger.info("ALL_SEND: %s: %s" %(self.nickname, kboard_input))
                 try:
                     self.socket.send(msg_to_send)
                 except socket.error as error:

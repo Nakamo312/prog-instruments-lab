@@ -3,3 +3,25 @@
 2024-11-19 01:29:52,649 root main.py 457 main_start ERROR An unexpected error occurred: cannot use a string pattern on a bytes-like object
 2024-11-19 01:31:43,656 root main.py 457 main_start ERROR An unexpected error occurred: unknown extension ?\d at position 19
 2024-11-19 01:35:49,341 root main.py 457 main_start ERROR An unexpected error occurred: unknown extension ?\d at position 19
+2024-11-19 01:41:13,207 root main.py 460 main_start ERROR An unexpected error occurred: a bytes-like object is required, not 'str'
+2024-11-19 01:48:26,276 root main.py 458 main_start ERROR An unexpected error occurred: unknown extension ?\d at position 19
+2024-11-19 01:53:02,477 root main.py 459 main_start ERROR An unexpected error occurred: a bytes-like object is required, not 'str'
+2024-11-19 01:57:02,361 root main.py 459 main_start ERROR An unexpected error occurred: a bytes-like object is required, not 'str'
+2024-11-19 02:00:23,266 root main.py 459 main_start ERROR An unexpected error occurred: cannot use a string pattern on a bytes-like object
+2024-11-19 02:03:43,870 root main.py 460 main_start ERROR An unexpected error occurred: unknown extension ?\d at position 19
+2024-11-19 02:07:21,979 root main.py 460 main_start ERROR An unexpected error occurred: unknown extension ?\d at position 19
+2024-11-19 02:12:49,686 root main.py 463 main_start ERROR An unexpected error occurred: unknown extension ?\d at position 19
+2024-11-19 02:15:06,185 root main.py 464 main_start ERROR An unexpected error occurred: unknown extension ?\d at position 19
+2024-11-19 02:17:05,513 root main.py 464 main_start ERROR An unexpected error occurred: unknown extension ?\d at position 19
+2024-11-19 02:23:58,969 root main.py 464 main_start ERROR An unexpected error occurred: unknown extension ?\d at position 19
+2024-11-19 14:10:51,482 root main.py 463 main_start ERROR An unexpected error occurred: cannot use a string pattern on a bytes-like object
+2024-11-19 14:25:40,472 root main.py 468 main_start ERROR An unexpected error occurred: cannot use a string pattern on a bytes-like object
+2024-11-19 14:39:59,258 root main.py 467 main_start ERROR An unexpected error occurred: a bytes-like object is required, not 'str'
+2024-11-19 14:44:59,395 root main.py 470 main_start ERROR An unexpected error occurred: a bytes-like object is required, not 'str'
+2024-11-19 14:51:28,005 root main.py 471 main_start ERROR An unexpected error occurred: a bytes-like object is required, not 'str'
+2024-11-19 14:53:38,439 root main.py 472 main_start ERROR An unexpected error occurred: a bytes-like object is required, not 'str'
+2024-11-19 23:23:41,694 root main.py 475 main_start ERROR An unexpected error occurred: 'tuple' object is not callable
+2024-11-19 23:23:44,418 root main.py 475 main_start ERROR An unexpected error occurred: 'tuple' object is not callable
+2024-11-19 23:23:47,141 root main.py 475 main_start ERROR An unexpected error occurred: 'tuple' object is not callable
+2024-11-19 23:23:49,857 root main.py 475 main_start ERROR An unexpected error occurred: 'tuple' object is not callable
+2024-11-19 23:23:52,583 root main.py 475 main_start ERROR An unexpected error occurred: 'tuple' object is not callable

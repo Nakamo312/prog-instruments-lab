@@ -1,0 +1,5 @@
+2024-11-19 14:56:35,365 - [App.Server]: INFO > AСTION: Server is running and listening on port 4418
+2024-11-19 14:57:00,268 - [App.Server]: INFO > ACTION: connection is established with 127.0.0.1:63835
+2024-11-19 14:58:40,333 - [App.Server]: INFO > AСTION: Server is running and listening on port 6788
+2024-11-19 14:58:52,045 - [App.Server]: INFO > ACTION: connection is established with 127.0.0.1:63873
+2024-11-19 14:59:20,629 - [App.Server]: INFO > USER_ADDED: NAKAMO312 has connected to chat
