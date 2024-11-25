@@ -5,10 +5,10 @@ import socket
 import string
 import time
 import _thread 
-import art 
-
-import multiprocessing 
 import tkinter as tk
+
+import multiprocessing
+import art
 
 
 characters = string.ascii_letters + string.digits
@@ -38,7 +38,7 @@ class Server():
         self.clients = []
         self.nicknames = []
 
-    def handle_client(self, client:socket):
+    def handle_client(self, client:socket) -> None:
         """
         Handles a single client connection.
         Continuously receives messages from the client
@@ -63,7 +63,7 @@ class Server():
             except Exception as ex:
                 print(f"An unexpected error occurred: {ex}")
 
-    def broadcast(self, message:bytes):
+    def broadcast(self, message:bytes) -> None:
         """
         Broadcasts a message to all connected clients.
             Args:
@@ -73,7 +73,7 @@ class Server():
             print(message)
             client.send(message)
 
-    def run(self):
+    def run(self) -> None:
         """
         Starts the server and listens for incoming client connections.
         Creates a socket, binds it to the specified IP address and port,
@@ -114,7 +114,7 @@ class Server():
                                       args=(self.socket_conn,))
             thread.start()        
 
-    def close_conn(self):
+    def close_conn(self) -> None:
         """Closes the server's socket and connection address."""
         self.socket_conn.close()
         self.socket.close()
@@ -156,7 +156,7 @@ class Client():
         self.queue = queue
         self.queue_send = queue_send
 
-    def connect_to_server(self):
+    def connect_to_server(self) -> None:
         """
         Attempts to connect to the specified server.
         This method creates a socket connection to the
@@ -198,7 +198,7 @@ class Client():
             print(error)
         return True
     
-    def send_msg(self):
+    def send_msg(self) -> None:
         """Sends messages from the queue to the server."""
         while True:
             if not self.queue_send.empty():
@@ -222,7 +222,7 @@ class Client():
                     print("Sorry, we can't send your message")
                     print(error)
 
-    def receive_msg(self):
+    def receive_msg(self) -> None:
         """
         Receives messages from the server
         and puts them into the queue.
@@ -241,7 +241,7 @@ class Client():
                     self.full_recieved_msg = f"{nickname}: {message}"
                     self.queue.put(self.full_recieved_msg)    
 
-    def add_lines(self):
+    def add_lines(self) -> None:
         """
         Adds received messages
         from the queue to the text output.
@@ -258,7 +258,7 @@ class Client():
         except Exception as ex:
             print(f"An unexpected error occurred: {ex}")
     
-    def send_msg_button(self):
+    def send_msg_button(self) -> None:
         """
         Handles sending a message when
         the send button is pressed.
@@ -268,7 +268,7 @@ class Client():
         self.queue_send.put(msg_for_send)
         self.entry1.delete(0, 'end')
 
-    def run_gui(self):
+    def run_gui(self) -> None:
         """Initialize and runs the GUI in mainloop."""
         self.root= tk.Tk()
 
@@ -296,7 +296,7 @@ class Client():
         self.root.after(0, self.add_lines)
         self.root.mainloop()
 
-    def run(self):
+    def run(self) -> None:
         """
         Runs the client, starting threads for GUI,
         sending, and receiving messages.
@@ -312,7 +312,7 @@ class Client():
         send_thread.join()
         receive_thread.join()                        
 
-    def close_conn(self):
+    def close_conn(self) -> None:
         """Closes the client's socket connection."""
         self.socket.close()
 
@@ -325,7 +325,7 @@ class Start():
     """
 
     @staticmethod
-    def main_start():
+    def main_start() -> None:
         """
         Main method that starts the application.
         It searches for available ports, prompts the user for input, and creates either
