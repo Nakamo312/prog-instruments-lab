@@ -38,7 +38,7 @@ class Server():
         self.clients = []
         self.nicknames = []
 
-    def handle_client(self, client:socket) -> None:
+    def handle_client(self, client: socket) -> None:
         """
         Handles a single client connection.
         Continuously receives messages from the client
@@ -63,7 +63,7 @@ class Server():
             except Exception as ex:
                 print(f"An unexpected error occurred: {ex}")
 
-    def broadcast(self, message:bytes) -> None:
+    def broadcast(self, message: bytes) -> None:
         """
         Broadcasts a message to all connected clients.
             Args:
