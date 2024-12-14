@@ -112,17 +112,19 @@ class Client():
         """
         while True:
             recieved_msg = self.socket.recv(128)
-            
-            if recieved_msg[0] == 194:
-                recieved_line = recieved_msg.decode("utf-8")
-            else:
-                recieved_line = recieved_msg.decode("utf-8")
-                nickname = recieved_line[-16::].replace("\x00", "")                
+            if recieved_msg:
+                if recieved_msg[0] == 194:
+                    recieved_line = recieved_msg.decode("utf-8")
+                else:
+                    recieved_line = recieved_msg.decode("utf-8")
+                    nickname = recieved_line[-16::].replace("\x00", "")                
 
-                if nickname != self.nickname.replace("\x00", ""):
-                    message = recieved_line[0:-16]
-                    self.full_recieved_msg = f"{nickname}: {message}"
-                    self.queue.put(self.full_recieved_msg)    
+                    if nickname != self.nickname.replace("\x00", ""):
+                        message = recieved_line[0:-16]
+                        self.full_recieved_msg = f"{nickname}: {message}"
+                        self.queue.put(self.full_recieved_msg) 
+            else:
+                break   
 
     def add_lines(self):
         """
