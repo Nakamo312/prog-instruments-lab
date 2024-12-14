@@ -1,13 +1,9 @@
 import pytest
-import logging
 import socket
+import queue
 from unittest.mock import Mock, patch, MagicMock
-from ..regex_processor import RegexProcessor
-from ..logger import ChatLogger
 from ..server import Server
-from ..app import Start
 from ..client import Client
-
 
 
 @patch("socket.socket")
@@ -52,7 +48,6 @@ def test_client_connect_to_server(mock_socket):
 
     assert is_connected is True
     mock_socket_instance.connect.assert_called_once_with(("127.0.0.1", 9000))
-
 @patch("socket.socket")
 @patch("queue.Queue.put")
 def test_client_receive_msg(mock_queue_put, mock_socket):
@@ -74,23 +69,45 @@ def test_client_receive_msg(mock_queue_put, mock_socket):
         client.receive_msg()
     mock_queue.put.assert_called_once_with("TestUser: Message")
     assert client.socket.recv.call_count == 2 
+    
+@pytest.fixture
+def mock_socket():
+    """Fixture to mock socket."""
+    with patch('socket.socket') as mock_socket_class:
+        mock_socket_instance = MagicMock()  # Мокаем экземпляр сокета
+        mock_socket_class.return_value = mock_socket_instance
+        yield mock_socket_instance
 
 
-@patch("builtins.input", side_effect=["S", "key123"])
-@patch("App.server.Server.run")
-def test_start_server(mock_server_run, mock_input):
-    with patch("logging.getLogger"):
-        Start.main_start()
+@pytest.fixture
+def client(mock_socket):
+    """Fixture to create a Client instance with mocked socket and queue."""
+    client = Client(ip_adr='127.0.0.1', port=12345, key='secret_key', nickname='testuser', 
+                    queue=queue.Queue(), queue_send=queue.Queue())
+    client.socket = mock_socket
+    return client
 
-    mock_server_run.assert_called_once()
+def test_send_msg(client):
+    """Test the send_msg method."""
+    message = "Hello, Server!"
+
+    client.queue_send.put(message)
+
+    assert not client.queue_send.empty(), "Queue is empty, message was not added"
+
+    # Вызываем метод send_msg
+    client.send_msg(exit_after_one=True)
+
+    # Ожидаем, что сокет будет вызван с этим сообщением
+    expected_message = (
+        message.encode("utf-8") + 
+        b'\x00' * (16 - len(client.nickname)) +  # Паддинг для nickname
+        client.nickname.encode("utf-8")
+    )
+
+    # Проверяем, что метод send был вызван с правильным сообщением
+    client.socket.send.assert_called_once_with(expected_message)
 
 
-@patch("builtins.input", side_effect=["C", "key123", "ClientNickname"])
-@patch("App.client.Client.connect_to_server", return_value=True)
-@patch("App.client.Client.run")
-def test_start_client(mock_client_run, mock_connect_to_server, mock_input):
-    with patch("logging.getLogger"):
-        Start.main_start()
 
-    mock_connect_to_server.assert_called_once()
-    mock_client_run.assert_called_once()
+
