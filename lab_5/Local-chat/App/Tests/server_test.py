@@ -74,7 +74,7 @@ def test_client_receive_msg(mock_queue_put, mock_socket):
 def mock_socket():
     """Fixture to mock socket."""
     with patch('socket.socket') as mock_socket_class:
-        mock_socket_instance = MagicMock()  # Мокаем экземпляр сокета
+        mock_socket_instance = MagicMock() 
         mock_socket_class.return_value = mock_socket_instance
         yield mock_socket_instance
 
@@ -90,22 +90,15 @@ def client(mock_socket):
 def test_send_msg(client):
     """Test the send_msg method."""
     message = "Hello, Server!"
-
     client.queue_send.put(message)
-
     assert not client.queue_send.empty(), "Queue is empty, message was not added"
-
-    # Вызываем метод send_msg
     client.send_msg(exit_after_one=True)
-
-    # Ожидаем, что сокет будет вызван с этим сообщением
     expected_message = (
         message.encode("utf-8") + 
-        b'\x00' * (16 - len(client.nickname)) +  # Паддинг для nickname
+        b'\x00' * (16 - len(client.nickname)) +
         client.nickname.encode("utf-8")
     )
 
-    # Проверяем, что метод send был вызван с правильным сообщением
     client.socket.send.assert_called_once_with(expected_message)
 
 
